@@ -24,13 +24,22 @@ public class WebConfig implements WebMvcConfigurer {
                         "/auth/reset-password",
                         "/admin/captcha/image", 
                         "/error",
-                        
-                        // 放行 Swagger 和 OpenAPI 文档资源
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/swagger-resources/**",
                         "/webjars/**"
                 );
+    }
+
+    @Override
+    public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+        // 【关键修复】允许跨域请求，否则测试工具无法访问
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
 }

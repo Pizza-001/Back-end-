@@ -1,6 +1,9 @@
 # 使用 JDK 17
 FROM openjdk:17-jdk-slim
 
+# 安装字体库（解决验证码生成时 NoClassDefFoundError: X11FontManager 问题）
+RUN apt-get update && apt-get install -y libfontconfig1 && rm -rf /var/lib/apt/lists/*
+
 # 创建一个非 root 用户（Hugging Face 安全要求）
 RUN useradd -m -u 1000 user
 USER user

@@ -41,11 +41,16 @@ public class SysUserServiceImpl implements SysUserService {
     public String loginByPassword(LoginDTO loginDTO) {
         // 先校验验证码
         if (loginDTO.getUuid() != null && loginDTO.getCode() != null) {
-            String verifyKey = loginDTO.getUuid();
-            String captcha = com.pet.hospital.controller.admin.CaptchaController.CAPTCHA_MAP.get(verifyKey);
-            com.pet.hospital.controller.admin.CaptchaController.CAPTCHA_MAP.remove(verifyKey);
-            if (captcha == null || !captcha.equalsIgnoreCase(loginDTO.getCode())) {
-                throw new RuntimeException("图形验证码错误或已失效");
+            // 【万能验证码修复】如果是 8888，则直接放行，无需校验图形
+            if ("8888".equals(loginDTO.getCode())) {
+                log.info("用户 [{}] 使用万能验证码 8888 登录", loginDTO.getUsername());
+            } else {
+                String verifyKey = loginDTO.getUuid();
+                String captcha = com.pet.hospital.controller.admin.CaptchaController.CAPTCHA_MAP.get(verifyKey);
+                com.pet.hospital.controller.admin.CaptchaController.CAPTCHA_MAP.remove(verifyKey);
+                if (captcha == null || !captcha.equalsIgnoreCase(loginDTO.getCode())) {
+                    throw new RuntimeException("图形验证码错误或已失效");
+                }
             }
         }
 
