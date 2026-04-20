@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.SysDeptMapper">
+
+    <select id="listAllDepts" resultType="com.pet.hospital.model.entity.SysDept">
+        SELECT * FROM sys_dept ORDER BY parent_id, sort_no
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dept (parent_id, dept_name, sort_no, leader, phone, email, status)
+        VALUES (#{parentId}, #{deptName}, #{sortNo}, #{leader}, #{phone}, #{email}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dept
+        <set>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="sortNo != null">sort_no = #{sortNo},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_dept WHERE id = #{id}
+    </delete>
+
+</mapper>

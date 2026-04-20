@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.BizScheduleMapper">
+    <select id="findByDoctorId" resultType="com.pet.hospital.model.entity.BizSchedule">
+        SELECT * FROM biz_schedule WHERE doctor_id = #{doctorId} AND schedule_date >= CURDATE()
+    </select>
+    
+    <select id="findById" resultType="com.pet.hospital.model.entity.BizSchedule">
+        SELECT * FROM biz_schedule WHERE id = #{id}
+    </select>
+    
+    <update id="decreaseRemainCapacity">
+        UPDATE biz_schedule 
+        SET remain_capacity = remain_capacity - 1 
+        WHERE id = #{id} AND remain_capacity > 0
+    </update>
+    
+    <select id="findAvailableByDoctorId" resultType="com.pet.hospital.model.entity.BizSchedule">
+        SELECT * FROM biz_schedule 
+        WHERE doctor_id = #{doctorId} 
+          AND schedule_date >= CURDATE()
+        ORDER BY schedule_date ASC, time_slot ASC
+    </select>
+</mapper>

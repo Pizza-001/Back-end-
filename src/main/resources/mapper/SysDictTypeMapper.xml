@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.SysDictTypeMapper">
+
+    <select id="listDictTypes" resultType="com.pet.hospital.model.entity.SysDictType">
+        SELECT * FROM sys_dict_type ORDER BY id DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dict_type (dict_name, dict_type, status, remark)
+        VALUES (#{dictName}, #{dictType}, #{status}, #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dict_type
+        <set>
+            <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
+            <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_dict_type WHERE id = #{id}
+    </delete>
+
+</mapper>

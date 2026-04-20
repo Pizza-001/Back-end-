@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.SysDictDataMapper">
+
+    <select id="listDictData" resultType="com.pet.hospital.model.entity.SysDictData">
+        SELECT * FROM sys_dict_data
+        <where>
+            <if test="dictType != null and dictType != ''">
+                AND dict_type = #{dictType}
+            </if>
+        </where>
+        ORDER BY sort_no ASC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dict_data (sort_no, dict_label, dict_value, dict_type, list_class, is_default, status, remark)
+        VALUES (#{sortNo}, #{dictLabel}, #{dictValue}, #{dictType}, #{listClass}, #{isDefault}, #{status}, #{remark})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dict_data
+        <set>
+            <if test="sortNo != null">sort_no = #{sortNo},</if>
+            <if test="dictLabel != null and dictLabel != ''">dict_label = #{dictLabel},</if>
+            <if test="dictValue != null and dictValue != ''">dict_value = #{dictValue},</if>
+            <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="listClass != null">list_class = #{listClass},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_dict_data WHERE id = #{id}
+    </delete>
+
+</mapper>

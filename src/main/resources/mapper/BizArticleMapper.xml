@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.BizArticleMapper">
+    <select id="findAll" resultType="com.pet.hospital.model.entity.BizArticle">
+        SELECT * FROM biz_article ORDER BY id DESC
+    </select>
+    <select id="findById" resultType="com.pet.hospital.model.entity.BizArticle">
+        SELECT * FROM biz_article WHERE id = #{id}
+    </select>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO biz_article (title, content, author, cover_image)
+        VALUES (#{title}, #{content}, #{author}, #{coverImage})
+    </insert>
+    
+    <update id="update">
+        UPDATE biz_article 
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="author != null and author != ''">author = #{author},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteById">
+        DELETE FROM biz_article WHERE id = #{id}
+    </delete>
+</mapper>

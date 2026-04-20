@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.BizDoctorMapper">
+    <select id="findByDepartment" resultType="com.pet.hospital.model.entity.BizDoctor">
+        SELECT * FROM biz_doctor 
+        <where>
+            <if test="department != null and department != ''">
+                department = #{department}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findById" resultType="com.pet.hospital.model.entity.BizDoctor">
+        SELECT * FROM biz_doctor WHERE id = #{id}
+    </select>
+    
+    <!-- 追加数据管理 (CRUD) 语句 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO biz_doctor (name, department, title, specialty, introduction)
+        VALUES (#{name}, #{department}, #{title}, #{specialty}, #{introduction})
+    </insert>
+    
+    <update id="update">
+        UPDATE biz_doctor
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="specialty != null and specialty != ''">specialty = #{specialty},</if>
+            <if test="introduction != null and introduction != ''">introduction = #{introduction},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteById">
+        DELETE FROM biz_doctor WHERE id = #{id}
+    </delete>
+</mapper>

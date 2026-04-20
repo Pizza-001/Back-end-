@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.BizPetMapper">
+
+    <resultMap id="PetVaccineResultMap" type="com.pet.hospital.model.vo.PetVaccineVO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="species" column="species"/>
+        <result property="breed" column="breed"/>
+        <result property="age" column="age"/>
+        <result property="gender" column="gender"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        
+        <!-- 一对多关联配置: 注入到 vaccineRecords 集合中 -->
+        <collection property="vaccineRecords" ofType="com.pet.hospital.model.entity.BizVaccineRecord">
+            <id property="id" column="v_id"/>
+            <result property="petId" column="v_pet_id"/>
+            <result property="vaccineName" column="v_name"/>
+            <result property="injectTime" column="v_inject_time"/>
+            <result property="nextInjectTime" column="v_next_inject_time"/>
+            <result column="v_create_time" property="createTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="findPetWithVaccinesByUserId" resultMap="PetVaccineResultMap">
+        SELECT p.*,
+               v.id AS v_id, v.vaccine_name AS v_vaccine_name,
+               v.inject_time AS v_inject_time, v.next_inject_time AS v_next_inject_time,
+               v.remarks AS v_remarks, v.create_time AS v_create_time
+        FROM biz_pet p
+        LEFT JOIN biz_vaccine_record v ON p.id = v.pet_id
+        WHERE p.user_id = #{userId}
+    </select>
+    
+    <!-- 补充宠物 CRUD -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO biz_pet (user_id, nickname, species, breed, age, gender)
+        VALUES (#{userId}, #{nickname}, #{species}, #{breed}, #{age}, #{gender})
+    </insert>
+    <update id="update">
+        UPDATE biz_pet
+        <set>
+            <if test="nickname != null and nickname != ''">nickname = #{nickname},</if>
+            <if test="species != null and species != ''">species = #{species},</if>
+            <if test="breed != null and breed != ''">breed = #{breed},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="gender != null">gender = #{gender},</if>
+        </set>
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM biz_pet WHERE id = #{id}
+    </delete>
+</mapper>

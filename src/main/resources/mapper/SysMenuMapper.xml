@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pet.hospital.mapper.SysMenuMapper">
+
+    <select id="findMenusByUserId" resultType="com.pet.hospital.model.entity.SysMenu">
+        SELECT DISTINCT m.* FROM sys_menu m
+        JOIN sys_role_menu rm ON m.id = rm.menu_id
+        JOIN sys_user_role ur ON rm.role_id = ur.role_id
+        WHERE ur.user_id = #{userId}
+        ORDER BY m.sort_no
+    </select>
+
+    <select id="listAllMenus" resultType="com.pet.hospital.model.entity.SysMenu">
+        SELECT * FROM sys_menu ORDER BY parent_id, sort_no
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_menu (parent_id, menu_name, path, component, perms, menu_type, sort_no)
+        VALUES (#{parentId}, #{menuName}, #{path}, #{component}, #{perms}, #{menuType}, #{sortNo})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_menu
+        <set>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="component != null">component = #{component},</if>
+            <if test="perms != null">perms = #{perms},</if>
+            <if test="menuType != null">menu_type = #{menuType},</if>
+            <if test="sortNo != null">sort_no = #{sortNo},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM sys_menu WHERE id = #{id}
+    </delete>
+
+</mapper>
