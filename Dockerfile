@@ -1,14 +1,19 @@
-# 使用 JDK 17 轻量级基础镜像
+# 使用 JDK 17
 FROM openjdk:17-jdk-slim
 
-# 设置工作目录
+# 创建一个非 root 用户（Hugging Face 安全要求）
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:$PATH"
+
 WORKDIR /app
 
-# 把编译好的 jar 包拷进去 (确保你本地运行过 mvn clean package)
-COPY target/*.jar app.jar
+# 拷贝 jar 包
+COPY --chown=user target/*.jar app.jar
 
-# Koyeb 默认喜欢用 8000 或 8080 端口
-EXPOSE 8080
+# 【关键】Hugging Face 强制要求监听 7860 端口
+ENV SERVER_PORT=7860
+EXPOSE 7860
 
-# 【核心必杀技】：强制限制 Java 内存，最大 300M，否则 Koyeb 会直接把你的服务杀掉 (OOM)
-ENTRYPOINT ["java", "-Xmx300m", "-Xms128m", "-jar", "app.jar"]
+# 启动命令
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=7860"]
